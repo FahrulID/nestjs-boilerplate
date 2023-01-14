@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum TryType {
+  LOGIN
+  EMAIL_VERIFICATION
+  FORGOT_PASSWORD
+}
+
+enum VerificationType {
+  EMAIL_VERIFICATION
+  FORGOT_PASSWORD
+}
+
+model User {
+  id            String    @default(uuid()) @db.VarChar(50)
+
+  email         String    @unique(map: "email") @db.VarChar(50)
+  password      String    @db.VarChar(255)
+
+  role          Role      @default(USER)
+
+  first_name    String    @db.VarChar(50)
+  last_name     String    @db.VarChar(50)
+
+  phone         String    @db.VarChar(50)
+  address       String?   @db.VarChar(255)
+  is_verified   Boolean   @default(false)
+
+  created_at    DateTime? @default(now()) @db.Timestamp(0)
+  updated_at    DateTime  @updatedAt @db.Timestamp(0)
+
+  // Relations
+  refresh_token Refresh_Token_Rotation[]
+  email_token   Email_Verification_Token[]
+
+  @@id([id])
+}
+
+model Email_Verification_Token {
+  user_id       String    @db.VarChar(50)
+  user          User      @relation(fields: [user_id], references: [id])
+
+  token         String    @unique @db.VarChar(255)
+  expires_at    DateTime  @db.Timestamp(0)
+
+  type          VerificationType 
+
+  @@id([user_id, type])
+}
+
+model Refresh_Token_Rotation {
+  user_id       String    @db.VarChar(50)
+  user          User      @relation(fields: [user_id], references: [id])
+
+  refresh_token String    @db.VarChar(255)
+
+  @@id([user_id, refresh_token])
+}
+
+model Tries {
+  ip            String    @db.VarChar(50)
+
+  count         Int       @default(0)
+  last_try      DateTime  @updatedAt()  @db.Timestamp(0)
+  type          TryType
+
+  @@id([ip, type])
+}

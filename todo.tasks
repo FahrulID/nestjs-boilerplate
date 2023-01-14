@@ -1,0 +1,6 @@
+Logger :
+    ☐ Use Winston for logging
+        ☐ Use wintson-daily-rotate-file for log rotation
+        
+Testing :
+    ☐ Make sure to use Jest for testing
