@@ -26,6 +26,18 @@ enum VerificationType {
   FORGOT_PASSWORD
 }
 
+enum PaymentStatus {
+  CAPTURE
+  SETTLEMENT
+  PENDING
+  DENY
+  CANCEL
+  EXPIRE
+  REFUND
+  PARTIAL_REFUND
+  AUTHORIZE
+}
+
 model User {
   id            String    @default(uuid()) @db.VarChar(50)
 
@@ -47,6 +59,7 @@ model User {
   // Relations
   refresh_token Refresh_Token_Rotation[]
   email_token   Email_Verification_Token[]
+  orders        Orders[]
 
   @@id([id])
 }
@@ -80,4 +93,19 @@ model Tries {
   type          TryType
 
   @@id([ip, type])
+}
+
+model Orders {
+  id            String    @default(uuid()) @db.VarChar(50)
+
+  user_id       String    @db.VarChar(50)
+  user          User      @relation(fields: [user_id], references: [id])
+
+  total         Float     @default(0)
+  status        PaymentStatus    @default(PENDING)
+
+  created_at    DateTime? @default(now()) @db.Timestamp(0)
+  updated_at    DateTime  @updatedAt @db.Timestamp(0)
+
+  @@id([id])
 }

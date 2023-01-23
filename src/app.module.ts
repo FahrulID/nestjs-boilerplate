@@ -5,6 +5,7 @@ import { PrismaModule } from './utils/prisma/prisma.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { PassportModule } from '@nestjs/passport';
+import { MidtransModule } from './resources/midtrans/midtrans.module';
 
 // Get environment variable of what environment we are running ( development, staging, production )
 const ENV = process.env.ENV;
@@ -40,6 +41,7 @@ require('dotenv').config({ path: !ENV ? '.env' : `.env.${ENV}` });
     PassportModule.register({}),
     PrismaModule,
     AuthModule,
+    MidtransModule,
   ],
 })
 export class AppModule {}

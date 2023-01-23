@@ -4,3 +4,9 @@ Logger :
         
 Testing :
     ☐ Make sure to use Jest for testing
+
+Auth :
+    ☐ Token for Forgot-Password use JWT instead of random number
+
+Midtrans :
+    ☐ Implement every payment method
